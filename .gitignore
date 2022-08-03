@@ -129,9 +129,7 @@ dmypy.json
 .pyre/
 
 # Data
-
-Data/
+data/
 
 # Model artifacts
-
-Models/
+models/
