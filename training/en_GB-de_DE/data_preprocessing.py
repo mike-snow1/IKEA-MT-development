@@ -14,6 +14,7 @@ def process_data():
 
     df = df[['en_GB', 'de_DE']] # will be redundent when setup 
     df = df.sample(1000)
+    
     # Remove nulls/duplicates
     df = df[(df['en_GB'].notnull()) & (df['de_DE'].notnull())]
     df.drop_duplicates()
@@ -41,4 +42,40 @@ def language_rules(dataframe):
     Output: Dataset after applying language rules to improve training
     :param dataframe: dataframe of translation memories
     """  
-    return dataframe
+    
+    #Language rules defined from feeback (need to link to confluence page)
+    def sie_check(s):
+        """
+        Output: Boolean check if 'sie'is in the second position
+        :param s: string
+        """
+        words = s.split()
+        
+        if len(words) > 1:
+            if str(s).split()[1] == 'sie':
+                return True
+            else:
+                return False
+        else:
+            return False
+        
+        
+    dataframe['de_DE'] = dataframe['de_DE'].apply(lambda s: s.replace(
+        'Du hast', 'Sie haben').replace(
+        'Eure', 'Deine').replace(
+        'Euren', 'Deinen').replace(
+        'Eurem', 'Deinem').replace(
+        'Eurer', 'Deiner').replace(
+        'Euer', 'Dein').replace(
+        'eure', 'deine').replace(
+        'euren', 'deinen').replace(
+        'eurem', 'deinem').replace(
+        'eurer', 'deiner').replace(
+        'euer', 'dein')
+                                                 )
+    
+    dataframe['sie'] = dataframe['de_DE'].apply(lambda s: sie_check(s))
+    dataframe = dataframe[dataframe['sie'] == False]                                                  
+                                                
+    return dataframe[['en_GB', 'de_DE']]
+

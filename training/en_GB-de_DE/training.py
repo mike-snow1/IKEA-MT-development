@@ -11,16 +11,12 @@ from datasets import Dataset, DatasetDict, load_dataset, load_metric
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, DataCollatorForSeq2Seq, \
 Seq2SeqTrainingArguments, Seq2SeqTrainer, MarianMTModel, MarianTokenizer
 
+# https://huggingface.co/course/chapter7/4?fw=pt - reference for building tuning model
 
 
 def load_data(): # from BQ/bucket?
     """
     Output: processed dataset for model training
-    :param dataset: raw dataset to transform
-    :param source_len: maximum sentence length for source string
-    :param target_len: maximum sentence length for target string
-    :param source: source language
-    :param target: target language
     """
     dataset = process_data()
     
@@ -51,7 +47,7 @@ def tokenization_processing(dataset, source_len=128, target_len=128,
     return model_inputs
 
 
-def compute_metrics(predictions):
+def compute_metrics(predictions): # n.b. can add more metrics later
     """
     Output: evaluation metrics to track model performance in training
     :param predictions: output of predictions to decode
@@ -87,8 +83,14 @@ def pipeline(model_name="../../models/en_GB-de_DE/IKEA-MT_en-GB_de-DE_2022-08-01
              model_output_name='IKEA_MT', batch_size=16, learning_rate=2e-5, 
              weight_decay=0.01, save_limit=20, epochs=5):
     """
-    Output
-    :param:
+    Output fine-tuned model
+    :param model_name: path to model
+    :param model_output_name: model output name to follow naming convention
+    :param batch_size: batch size for model input int
+    :param learning_rate: optimisation learning rate float
+    :param weight_decay: weight decay float
+    :param save_limit: number of checkpoints to save (every 5000 steps)
+    :param epochs: number of passes through the training data
     """
     global tokenizer, trained_model
     
@@ -107,6 +109,7 @@ def pipeline(model_name="../../models/en_GB-de_DE/IKEA-MT_en-GB_de-DE_2022-08-01
     
     time = str(datetime.now())
     
+    # n.b. need to add early stopping with longer training times
     args = Seq2SeqTrainingArguments(
         f"../../models/checkpoints/{model_output_name}_en-de_{time}",
         evaluation_strategy = "epoch",
@@ -118,6 +121,7 @@ def pipeline(model_name="../../models/en_GB-de_DE/IKEA-MT_en-GB_de-DE_2022-08-01
         num_train_epochs = epochs,
         predict_with_generate=True    
     )
+    
     
     trainer = Seq2SeqTrainer(
         trained_model,

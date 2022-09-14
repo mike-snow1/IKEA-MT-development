@@ -9,10 +9,11 @@ def glossary_full_match():
     Output: Translated text of the source text
     :param src_text: source string
     """  
+    
     pass
 
 
-def glossary_dnt():
+def glossary_dnt(): # need to be a new tokenizer (or add special tokens?) 
     """
     Output: Translated text of the source text
     :param src_text: source string
@@ -20,7 +21,7 @@ def glossary_dnt():
     pass
 
     
-def load_model_from_gcp():
+def load_model_from_bucket():
     """
     Output: Loads model from GCP BQ or bucket
     """ 
@@ -32,9 +33,9 @@ def inference(src_text, model_path=model_path):
     Output: Translated text of the source text
     :param src_text: source string
     """   
-    # model =  load_model_from_gcp()
+    # model =  load_model_from_bucket()
     
-    if glossary_full_match():
+    if glossary_full_match(src_text):
         return src_text
         
     model = MarianMTModel.from_pretrained(model_name)
