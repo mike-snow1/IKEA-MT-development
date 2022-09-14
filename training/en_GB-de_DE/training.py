@@ -66,7 +66,7 @@ def compute_metrics(predictions): # n.b. can add more metrics later
         preds = preds[0]
     
     decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
-    labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+    labels = np.where(labels != -100, labels, tokenizer.pad_token_id) # remove padding tokens that can't be decoded
     decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
     decoded_preds, decoded_labels = process_text(decoded_preds, decoded_labels)
