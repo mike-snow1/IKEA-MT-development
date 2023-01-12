@@ -76,7 +76,6 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-.ipynb
 
 # IPython
 profile_default/
@@ -130,7 +129,8 @@ dmypy.json
 .pyre/
 
 # Data
-data/
+*.csv
+*.xlsx
 
 # Model artifacts
 models/
